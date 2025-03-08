@@ -1,0 +1,19 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.alert {
+    background-color: #421f5e4f;
+    border-color: #f5c6cb;
+    border-radius: 0.25rem;
+    padding: 10px;
+    margin-bottom: 10px;
+}
