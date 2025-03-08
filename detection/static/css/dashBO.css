@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 1200px;
+    margin: 80px auto 0 auto; /* Ajustez la marge supérieure pour éviter de cacher le contenu derrière la navbar */
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h1, h2 {
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+}
+.chart-container {
+    margin: 40px 0;
+    text-align: center;
+}
+.chart-container canvas {
+    max-width: 100%;
+    margin: 0 auto;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.legend {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+.description {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 0.9em;
+    color: #444;
+}
+footer {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+.filters, .buttons, .export-buttons {
+    text-align: center;
+    margin: 20px 0;
+}
+.filters input, .filters button, .buttons button, .export-buttons button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.filters button:hover, .buttons button:hover, .export-buttons button:hover {
+    background-color: #45a049;
+}
+.filters input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.buttons button {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.buttons button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}

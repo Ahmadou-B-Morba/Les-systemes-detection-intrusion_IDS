@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de Bord Snort</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashBS.css' %}">
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Graphiques Dynamiques de Sécurité</h1>
+        <div class="filters">
+            <label for="start-date">Date de début :</label>
+            <input type="date" id="start-date">
+            <label for="end-date">Date de fin :</label>
+            <input type="date" id="end-date">
+            <button class="apply-filter-btn" onclick="updateCharts()">Appliquer le filtre</button>
+        </div>
+        <div class="button-container">
+            <button onclick="location.href='/tableS/'">Table Snort</button>
+            <button onclick="location.href='/dashboardO/'">Dashboard Ossec</button>
+        </div>
+    </div>
+    <div class="content">
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <canvas id="alertesParPriorite"></canvas>
+                <button class="export-btn" onclick="exportChart('alertesParPriorite')">Exporter</button>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="alertesParType"></canvas>
+                <button class="export-btn" onclick="exportChart('alertesParType')">Exporter</button>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="alertesParProtocole"></canvas>
+                <button class="export-btn" onclick="exportChart('alertesParProtocole')">Exporter</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let alertesParPrioriteChart, alertesParTypeChart, alertesParProtocoleChart;
+
+        // Fonction pour extraire la priorité des alertes
+        function formatAlerts(alert) {
+            const priorityMatch = alert.match(/\[Priority: (\d+)\]/);
+            return priorityMatch ? parseInt(priorityMatch[1], 10) : null;
+        }
+
+        // Fonction pour filtrer les alertes en fonction des dates
+        function filterByDate(alert, startDate, endDate) {
+            const alertDate = new Date(alert.timestamp);
+            if (startDate && alertDate < new Date(startDate)) {
+                return false;
+            }
+            if (endDate && alertDate > new Date(endDate)) {
+                return false;
+            }
+            return true;
+        }
+
+        // Fonction pour mettre à jour les graphiques en fonction des filtres
+        function updateCharts() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            fetch('/graphe_data_snort/')
+                .then(response => response.json())
+                .then(data => {
+                    const alertesParPriorite = {};
+                    const alertesParType = {};
+                    const alertesParProtocole = {};
+
+                    data.forEach(alert => {
+                        const priority = formatAlerts(alert.alert);
+                        const withinDateFilter = filterByDate(alert, startDate, endDate);
+
+                        if (withinDateFilter) {
+                            if (priority !== null) {
+                                if (!alertesParPriorite[priority]) {
+                                    alertesParPriorite[priority] = 0;
+                                }
+                                alertesParPriorite[priority]++;
+                            }
+
+                            const typeMatch = alert.alert.match(/\[Classification: ([^\]]+)\]/);
+                            const type = typeMatch ? typeMatch[1] : 'Inconnu';
+                            if (!alertesParType[type]) {
+                                alertesParType[type] = 0;
+                            }
+                            alertesParType[type]++;
+
+                            const protocoleMatch = alert.alert.match(/\{([^}]+)\}/);
+                            const protocole = protocoleMatch ? protocoleMatch[1] : 'Inconnu';
+                            if (!alertesParProtocole[protocole]) {
+                                alertesParProtocole[protocole] = 0;
+                            }
+                            alertesParProtocole[protocole]++;
+                        }
+                    });
+
+                    const labelsPriorite = Object.keys(alertesParPriorite);
+                    const dataPriorite = Object.values(alertesParPriorite);
+
+                    const labelsType = Object.keys(alertesParType);
+                    const dataType = Object.values(alertesParType);
+
+                    const labelsProtocole = Object.keys(alertesParProtocole);
+                    const dataProtocole = Object.values(alertesParProtocole);
+
+                    // Détruire les anciens graphiques s'ils existent
+                    if (alertesParPrioriteChart) alertesParPrioriteChart.destroy();
+                    if (alertesParTypeChart) alertesParTypeChart.destroy();
+                    if (alertesParProtocoleChart) alertesParProtocoleChart.destroy();
+
+                    // Créer un nouveau graphique pour les alertes par priorité
+                    alertesParPrioriteChart = new Chart(document.getElementById('alertesParPriorite'), {
+                        type: 'bar',
+                        data: {
+                            labels: labelsPriorite,
+                            datasets: [{
+                                label: 'Nombre d\'alertes par priorité',
+                                data: dataPriorite,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 1000,
+                                easing: 'easeInOutBounce'
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Nombre d\'alertes par priorité',
+                                    font: {
+                                        size: 18
+                                    }
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    });
+
+                    // Créer un nouveau graphique pour les alertes par type
+                    alertesParTypeChart = new Chart(document.getElementById('alertesParType'), {
+                        type: 'pie',
+                        data: {
+                            labels: labelsType,
+                            datasets: [{
+                                label: 'Nombre d\'alertes par type',
+                                data: dataType,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 1000,
+                                easing: 'easeInOutBounce'
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Nombre d\'alertes par type',
+                                    font: {
+                                        size: 18
+                                    }
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    });
+
+                    // Créer un nouveau graphique pour les alertes par protocole
+                    alertesParProtocoleChart = new Chart(document.getElementById('alertesParProtocole'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: labelsProtocole,
+                            datasets: [{
+                                label: 'Nombre d\'alertes par protocole',
+                                data: dataProtocole,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 1000,
+                                easing: 'easeInOutBounce'
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Nombre d\'alertes par protocole',
+                                    font: {
+                                        size: 18
+                                    }
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Erreur lors de la récupération des données:', error));
+        }
+
+        // Fonction pour exporter un graphique
+        function exportChart(chartId) {
+            const canvas = document.getElementById(chartId);
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = `${chartId}.png`;
+            link.click();
+        }
+
+        // Charger les graphiques au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCharts();
+        });
+    </script>
+</body>
+</html>

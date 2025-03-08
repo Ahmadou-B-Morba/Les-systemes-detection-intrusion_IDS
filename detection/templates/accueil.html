@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration de l'IDS</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/accueil.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h1><i>Configuration de l'IDS</i></h1>
+    <p>Bienvenue, {{ user.first_name }} {{ user.last_name }}!</p>
+    <button id="unsubscribe-btn" onclick="deconnection()">Déconnexion</button>
+
+    <div class="ip-button-container" align="center">
+      <h2>Adresses IP enregistrées</h2>
+      <button type="button" class="ip-button" onclick="selectIP('192.168.13.129')">192.168.13.129</button>
+      <button type="button" class="ip-button" onclick="selectIP('192.168.13.130')">192.168.13.130</button>
+    </div>
+
+    <form id="ids-config-form" method="POST" onsubmit="return validateForm()">
+      {% csrf_token %}
+      <input type="hidden" id="selected-ip" name="selected_ip">
+      <div class="form-group">
+        <label for="ids-type">Type d'IDS :</label>
+        <select id="ids-type" name="ids_type">
+          <option value="AUCUN">AUCUN</option>
+          <option value="HIDS">HIDS (Host-based)</option>
+          <option value="NIDS">NIDS (Network-based)</option>
+        </select>
+      </div>
+      <div class="button-group">
+        <button type="submit" class="submit-button">EFFECTUER L'ANALYSE</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const registeredIPs = ['192.168.13.129', '192.168.13.130'];
+
+    function selectIP(ip) {
+      document.getElementById("selected-ip").value = ip;
+    }
+
+    function validateForm() {
+      const selectedIp = document.getElementById("selected-ip").value.trim();
+      const idsType = document.getElementById("ids-type").value;
+
+      if (!selectedIp) {
+        alert("Veuillez sélectionner une adresse IP en cliquant sur un des boutons d'adresse IP.");
+        return false;
+      }
+
+      if (idsType === "AUCUN") {
+        alert("Veuillez choisir un type d'IDS autre que 'AUCUN'.");
+        return false;
+      }
+
+      if (!registeredIPs.includes(selectedIp)) {
+        alert("L'adresse IP sélectionnée n'est pas enregistrée.");
+        return false;
+      }
+
+      if (registeredIPs.length < 2) {
+        alert("Les deux adresses IP doivent être enregistrées pour effectuer l'analyse.");
+        return false;
+      }
+
+      if (idsType === "HIDS") {
+        window.location.href = "{% url 'tableO' %}";
+        return false;
+      } else if (idsType === "NIDS") {
+        window.location.href = "{% url 'tableS' %}";
+        return false;
+      }
+
+      return true;
+    }
+
+    function deconnection() {
+      window.location.href = "{% url 'connexion' %}";
+    }
+  </script>
+</body>
+</html>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #a9d4f1, #084b8a); 
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #f0f3f5;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .ip-button-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .ip-button {
+    background-color: #084b8a;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 16px;
+  }
+  .ip-button:hover {
+    background-color: #063d6a;
+  }
+  #unsubscribe-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #unsubscribe-btn:hover {
+    background-color: #d32f2f;
+  }
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .submit-button {
+    background-color: #3dc53d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .submit-button:hover {
+    background-color: #45a049;
+  }
+</style>
