@@ -1,115 +1,87 @@
-🛡️ Système de Détection d’Intrusions basé sur l’Apprentissage Automatique
-📌 Présentation du projet
-Ce projet de fin d’études consiste à concevoir et implémenter un système de détection d’intrusions (IDS) combinant des outils de sécurité reconnus et des modèles d’apprentissage automatique, afin de renforcer la protection des réseaux informatiques contre les cyberattaques.
+# Système de Détection d’Intrusions basé sur l’Apprentissage Automatique
 
-Le système permet de collecter, analyser et visualiser les alertes de sécurité issues à la fois :
+## Présentation générale
+Ce projet s’inscrit dans le cadre d’un **Projet de Fin d’Études (PFE)** et porte sur le **développement d’un système de détection d’intrusions (IDS)** combinant des techniques classiques de cybersécurité et des **méthodes d’apprentissage automatique**.
+Face à la multiplication et à la sophistication des cyberattaques, les solutions de sécurité traditionnelles montrent certaines limites, notamment en matière d’adaptabilité. Ce projet propose une approche hybride visant à **améliorer la détection des intrusions réseau et hôte**, tout en facilitant l’analyse des alertes grâce à une **interface web centralisée**.
 
-D’un NIDS (Network-based IDS) pour la surveillance du trafic réseau.
+## Objectifs du projet
+L’objectif principal est de concevoir un IDS capable de détecter efficacement des comportements malveillants sur un réseau informatique. Plus précisément, le projet vise à :
 
-D’un HIDS (Host-based IDS) pour la surveillance des hôtes.
+- Comprendre les principes fondamentaux de la **cybersécurité** et des systèmes IDS  
+- Mettre en œuvre un **NIDS** et un **HIDS** dans un environnement réel  
+- Exploiter le **Machine Learning** pour améliorer la précision de la détection  
+- Réduire les faux positifs et les faux négatifs  
+- Fournir une **interface graphique claire** pour la visualisation et l’analyse des alertes  
 
-L’objectif est d’offrir une détection plus intelligente, adaptative et efficace, capable d’identifier aussi bien des attaques connues que des comportements anormaux.
+## Principe de fonctionnement
+Le système repose sur une **architecture hybride** :
 
-🎯 Objectifs
-Comprendre les fondements de la cybersécurité et des systèmes IDS.
+- **SNORT** est utilisé comme système de détection d’intrusions réseau (NIDS) afin d’analyser le trafic et identifier des signatures d’attaques connues.
+- **OSSEC** est déployé comme système de détection d’intrusions hôte (HIDS) pour surveiller l’intégrité des fichiers, les journaux et les activités système.
+- Les alertes collectées sont stockées dans une base de données et analysées à l’aide de **modèles d’apprentissage automatique**.
+- Une **application web développée avec Django** permet d’afficher, filtrer et analyser les résultats via des tableaux de bord interactifs.
 
-Mettre en œuvre un NIDS et un HIDS dans un environnement réel.
+Cette approche permet de combiner **détection par signatures**, **analyse comportementale** et **apprentissage automatique**.
 
-Exploiter des algorithmes de Machine Learning pour améliorer la détection des intrusions.
+## Fonctionnalités principales
+- Authentification des utilisateurs  
+- Configuration du système IDS  
+- Visualisation des alertes du **NIDS (SNORT)**  
+- Visualisation des alertes du **HIDS (OSSEC)**  
+- Tableaux de bord interactifs  
+- Graphiques statistiques (types d’attaques, priorités, protocoles, évolution temporelle)  
+- Analyse des prédictions issues des modèles de Machine Learning  
 
-Développer une interface web intuitive pour la visualisation et l’analyse des alertes.
+## Technologies et outils utilisés
 
-Comparer les résultats des approches traditionnelles et basées sur l’apprentissage automatique.
+### Cybersécurité & Réseaux
+- SNORT  
+- OSSEC  
+- Nmap / Zenmap  
+- Metasploit  
+- Wireshark  
 
-🧠 Approche adoptée
-Le projet repose sur une architecture hybride combinant :
+### Développement
+- **Backend** : Python, Django  
+- **Frontend** : HTML, CSS, JavaScript, Bootstrap  
+- **Base de données** : SQL  
 
-SNORT pour la détection réseau (NIDS).
+### Apprentissage automatique
+- Random Forest  
+- Support Vector Machine (SVM)  
+- Deep Learning  
 
-OSSEC pour la détection côté hôte (HIDS).
+## Architecture du système
+Le système est organisé autour de plusieurs composants :
 
-Des modèles d’apprentissage automatique (Random Forest, SVM, Deep Learning).
+1. **Collecte des données** depuis SNORT et OSSEC  
+2. **Stockage centralisé** des alertes dans une base de données  
+3. **Traitement et classification** à l’aide des modèles ML  
+4. **Visualisation** via une interface web intuitive  
+Cette architecture facilite la supervision de la sécurité et l’aide à la prise de décision.
 
-Une application web développée avec Django pour centraliser et visualiser les données.
+## Résultats et analyse
 
-Les données collectées sont prétraitées, analysées et utilisées pour entraîner des modèles capables de prédire et classifier les activités malveillantes.
+Les expérimentations réalisées montrent que l’intégration du **Machine Learning** permet :
 
-🧩 Fonctionnalités principales
-Authentification des utilisateurs.
+- une meilleure détection des comportements anormaux,  
+- une réduction significative des faux positifs,  
+- une meilleure adaptabilité face aux nouvelles attaques,  
+- une analyse plus claire grâce aux graphiques et tableaux de bord.
 
-Configuration de l’IDS.
+## Perspectives d’amélioration
+Plusieurs évolutions sont envisageables :
 
-Visualisation des alertes NIDS et HIDS.
+- Détection et analyse en **temps réel**  
+- Ajout de mécanismes de **réponse automatique aux incidents**  
+- Enrichissement des jeux de données d’apprentissage  
+- Intégration dans une solution de type **SIEM**  
+- Déploiement en environnement de production  
 
-Tableaux de bord interactifs.
+## Auteurs
+- **Ahmadou Baba MORBA**  
+- **Hamid Saleh OUMAR**
 
-Graphiques d’analyse (priorité, type d’attaque, protocole, évolution temporelle).
-
-Comparaison des performances des modèles ML.
-
-🛠️ Technologies utilisées
-🔐 Sécurité & Réseau
-SNORT | OSSEC
-
-Nmap / Zenmap | Metasploit | Wireshark
-
-💻 Développement
-Backend : Python, Django
-
-Frontend : HTML, CSS, JavaScript, Bootstrap
-
-Base de données : SQL
-
-🤖 Machine Learning
-Random Forest
-
-Support Vector Machine (SVM)
-
-Deep Learning
-
-🖥️ Architecture générale
-Le système repose sur un flux de données structuré :
-
-Collecte des alertes depuis SNORT et OSSEC.
-
-Stockage centralisé dans une base de données.
-
-Traitement intelligent via des modèles ML.
-
-Interface web pour l’analyse et la prise de décision.
-
-📊 Résultats obtenus
-Les expérimentations montrent que :
-
-L’intégration du Machine Learning améliore la détection des intrusions.
-
-Les faux positifs sont réduits.
-
-Le système est plus adaptatif face aux nouvelles attaques.
-
-La visualisation facilite l’analyse et la compréhension des menaces.
-
-🚀 Perspectives
-Intégration en temps réel dans un environnement de production.
-
-Ajout d’un système de réponse automatique aux incidents.
-
-Enrichissement des jeux de données d’entraînement.
-
-Déploiement sous forme de SIEM léger.
-
-👨‍🎓 Auteurs
-Ahmadou Baba MORBA
-
-Hamid Saleh OUMAR
-
-Encadré par :
-
-Mme Fetjah Leila – Faculté des Sciences Aïn Chock
-
-📄 Contexte académique
-Projet de Fin d’Études
-
-Licence Sciences Mathématiques et Informatique – Option Réseaux
-
-Année universitaire : 2022 / 2023
+Encadré par :  
+**Mme Fetjah Leila**  
+Faculté des Sciences Aïn Chock – Casablanca
